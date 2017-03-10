@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>jp.co.eit.listsample</groupId>
-	<artifactId>kistsample01</artifactId>
+	<artifactId>listsample01</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>kistsample01</name>
+	<name>listsample01</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>

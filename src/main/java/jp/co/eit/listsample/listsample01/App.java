@@ -18,9 +18,10 @@ public class App {
 	 */
 	public static void main(String[] args) {
 
-		method01();
-		method02();
-
+//		method01();
+//		method02();
+//		method03();
+		method04();
 	}
 
 	/**
@@ -173,6 +174,125 @@ public class App {
 		dataArray = createOrderNo(dataArray);
 		initDeploy(dataArray);
 
+	}
+
+	/**
+	 * やり方3
+	 * ラベル一覧のリストをCSV形式で準備した場合
+	 * 表示順序を算出し
+	 * 表示
+	 * 移動サンプル()
+	 */
+	private static void method03() {
+		// TODO 自動生成されたメソッド・スタブ
+		// 8番目インデックスの要素に表示順序の決め手となる数字を算出し格納する列を設ける（テーブルには存在しない）
+		String[][] dataArray = {
+				{ "1", "0000", "0001", "1", "A",    "10000", "0", "0" ,""},
+				{ "2", "0001", "0002", "1", "A-1",  "01000", "0", "0" ,""},
+				{ "3", "0001", "0003", "2", "A-2",  "01000", "0", "0" ,""},
+				{ "4", "0000", "0004", "2", "B",    "10000", "0", "0" ,""},
+				{ "5", "0004", "0005", "1", "B-1",  "01000", "0", "0" ,""},
+				{ "6", "0004", "0006", "2", "B-2",  "01000", "0", "0" ,""},
+				{ "7", "0006", "0007", "1", "B-2-1","00100", "0", "0" ,""},
+				{ "8", "0000", "0008", "3", "C",    "10000", "0", "0" ,""},
+		};
+		// createOrderNo(dataArray)にて、表示順序を算出して埋め込む
+		System.out.println("初期データ");
+		dataArray = createOrderNo(dataArray);
+		initDeploy(dataArray);
+
+		// 移動：B-1 が Aの三男になる場合
+		// 削除→挿入ではなく、あくまでも対象データの更新処理
+		System.out.println("移動：B-2 が Aの三男に");
+		dataArray = updateOneData(dataArray,"0001","0006","3","B-2","01000","0","0","");
+		dataArray = createOrderNo(dataArray);
+		initDeploy(dataArray);
+
+		// それに付随してB-2-1もついてくる
+		// 親をつまんで移動する場合、子供は親を知っているだけであえて更新の必要なし
+		// ただし、親自体が階層移動までする場合は、階層列の値が変化させなければならない
+//		System.out.println("移動：それに付随してB-2-1もついてくる");
+//		dataArray = updateOneData(dataArray,"0006","0007","1","B-2-1","00100","0","0","");
+//		dataArray = createOrderNo(dataArray);
+//		initDeploy(dataArray);
+
+	}
+
+	/**
+	 * やり方3
+	 * ラベル一覧のリストをCSV形式で準備した場合
+	 * 表示順序を算出し
+	 * 表示
+	 * 移動サンプル()
+	 */
+	private static void method04() {
+		// TODO 自動生成されたメソッド・スタブ
+		// 8番目インデックスの要素に表示順序の決め手となる数字を算出し格納する列を設ける（テーブルには存在しない）
+		String[][] dataArray = {
+				{ "1", "0000", "0001", "1", "A",    "10000", "0", "0" ,""},
+				{ "2", "0001", "0002", "1", "A-1",  "01000", "0", "0" ,""},
+				{ "3", "0001", "0003", "2", "A-2",  "01000", "0", "0" ,""},
+				{ "4", "0000", "0004", "2", "B",    "10000", "0", "0" ,""},
+				{ "5", "0004", "0005", "1", "B-1",  "01000", "0", "0" ,""},
+				{ "6", "0004", "0006", "2", "B-2",  "01000", "0", "0" ,""},
+				{ "7", "0006", "0007", "1", "B-2-1","00100", "0", "0" ,""},
+				{ "8", "0000", "0008", "3", "C",    "10000", "0", "0" ,""},
+		};
+		// createOrderNo(dataArray)にて、表示順序を算出して埋め込む
+		System.out.println("初期データ");
+		dataArray = createOrderNo(dataArray);
+		initDeploy(dataArray);
+
+		// 移動：B-2 が A-2の子供になる場合
+		// 削除→挿入ではなく、あくまでも対象データの更新処理
+		System.out.println("移動：B-2 が A-2の子供に");
+		int levelOrder = getLevelOrder(dataArray,"0003");
+		System.out.println("A-2の子供数：" + levelOrder);
+		String nextLevel = getNextLevel(dataArray,"0003");
+		System.out.println("nextLevel：" + nextLevel);
+		dataArray = updateOneData(dataArray,"0003","0006","" + (levelOrder + 1),"B-2",nextLevel,"0","0","");
+		dataArray = createOrderNo(dataArray);
+		initDeploy(dataArray);
+
+		// それに付随してB-2-1もついてくる
+		// 親をつまんで移動する場合、子供は親を知っているだけであえて更新の必要なし
+		// ただし、親自体が階層移動までする場合は、階層列の値が変化させなければならない
+		System.out.println("移動：それに付随してB-2-1もついてくる");
+		dataArray = updateOneData(dataArray,"0006","0007","1","B-2-1","00010","0","0","");
+		dataArray = createOrderNo(dataArray);
+		initDeploy(dataArray);
+
+	}
+	/**
+	 * 検索対象のラベルが親の場合、子供の人数を調べて返す。
+	 * @param dataArray
+	 * @param targetLabel
+	 * @return
+	 */
+	private static int getLevelOrder(String[][] dataArray,String targetLabel){
+		int levelOrder = Arrays.asList(dataArray).stream()
+			.filter(predicate ->(predicate[1].equals(targetLabel)))
+			.map(mapper -> mapper[1])
+			.collect(Collectors.toList()).size();
+		return levelOrder;
+	}
+
+	/**
+	 * 検索対象のラベルの階層を取得し、１階層下の階層値を取得する
+	 * @param dataArray
+	 * @param targetLabel
+	 * @return
+	 */
+	private static String getNextLevel(String[][] dataArray,String targetLabel){
+		String nextLevel = Arrays.asList(dataArray).stream()
+			.filter(predicate ->(predicate[2].equals(targetLabel)))
+			.map(mapper -> mapper[5])
+//			.forEach(s -> {
+//				  System.out.printf("value=%s%n", s);
+//			});
+			.collect(Collectors.joining());
+		nextLevel = "0".concat(nextLevel).substring(0, 5);
+		return nextLevel;
 	}
 
 	/**
