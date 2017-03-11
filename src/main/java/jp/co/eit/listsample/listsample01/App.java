@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -21,7 +22,33 @@ public class App {
 //		method01();
 //		method02();
 //		method03();
-		method04();
+//		method04();
+
+		method05();
+	}
+
+	private static void method05() {
+		String[][] dataArray = {
+				{ "1", "0000", "0001", "1", "A",    "10000", "0", "0" ,""},
+				{ "2", "0001", "0002", "1", "A-1",  "01000", "0", "0" ,""},
+				{ "3", "0001", "0003", "2", "A-2",  "01000", "0", "0" ,""},
+				{ "4", "0000", "0004", "2", "B",    "10000", "0", "0" ,""},
+				{ "5", "0004", "0005", "1", "B-1",  "01000", "0", "0" ,""},
+				{ "6", "0004", "0006", "2", "B-2",  "01000", "0", "0" ,""},
+				{ "7", "0006", "0007", "1", "B-2-1","00100", "0", "0" ,""},
+				{ "8", "0000", "0008", "3", "C",    "10000", "0", "0" ,""},
+		};
+		Algorithm01 obj = new Algorithm01(dataArray);
+		Map<String,String> map = obj.modifyMap();
+		map.keySet().stream().sorted().forEach((key) -> {
+			String e = map.get(key);
+			String[] params = e.split("/");
+			String labelName = params[4];//key.split("_")[1];
+			params[8] = key.split("_")[0];
+			String value = getConcatParams(params);
+			System.out.printf("%5s:%s\n",params[8],labelName);
+		});
+
 	}
 
 	/**
@@ -238,6 +265,7 @@ public class App {
 				{ "7", "0006", "0007", "1", "B-2-1","00100", "0", "0" ,""},
 				{ "8", "0000", "0008", "3", "C",    "10000", "0", "0" ,""},
 		};
+
 		// createOrderNo(dataArray)にて、表示順序を算出して埋め込む
 		System.out.println("初期データ");
 		dataArray = createOrderNo(dataArray);
@@ -261,6 +289,10 @@ public class App {
 		dataArray = updateOneData(dataArray,"0006","0007","1","B-2-1","00010","0","0","");
 		dataArray = createOrderNo(dataArray);
 		initDeploy(dataArray);
+
+		// test
+		String tmp = getConcatParams(dataArray[1]);
+		System.out.println(tmp);
 
 	}
 	/**
@@ -510,5 +542,22 @@ public class App {
 
 		});
 		return paramMap;
+	}
+
+	private static Map<String, String> getParamMapByLabelCode(String[][] dataArray) {
+		// TODO 自動生成されたメソッド・スタブ
+		// 事前算出した順序列が、最終表示順序を導ける。
+		// 最終表示順序は必要ない
+		Map<String, String> paramMap = Arrays.asList(dataArray).stream().collect(Collectors.toMap(
+				s -> s[2],
+				s -> s[0] + "/" + s[1] + "/" + s[2] + "/" + s[3] + "/" + s[4] + "/" + s[5] + "/" + s[6] + "/" + s[7] + "/" + s[8],
+				(s1, s2) -> s1));
+		return paramMap;
+	}
+
+	private static String getConcatParams(String[] params) {
+		// TODO 自動生成されたメソッド・スタブ
+		Optional<String> a =Arrays.asList(params).stream().reduce((value1, value2) -> value1.concat("/").concat(value2));
+		return a.get();
 	}
 }
