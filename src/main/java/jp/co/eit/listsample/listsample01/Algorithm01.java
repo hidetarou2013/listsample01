@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Algorithm01 {
 
@@ -127,6 +129,49 @@ public class Algorithm01 {
 		return this.targetMap;
 	}
 
+	public Map<String,String> modifyMapAfterMove() {
+		this.targetOrderMap.keySet().stream().forEach((key) -> {
+//			System.out.println(key + ":" );
+			String obj = this.targetOrderMap.get(key);
+			String[] params = obj.split("/");
+			String labelName = params[4];
+			int kaisou = Integer.parseInt(params[5]);
+			int totalOrder =0;
+			if(kaisou == 10000){
+				totalOrder = Integer.parseInt(params[3]) * 10000;
+			}else if(kaisou == 1000){
+				totalOrder = Integer.parseInt(params[3]) * 1000;
+				labelName = "_" + labelName;
+			}else if(kaisou == 100){
+				totalOrder = Integer.parseInt(params[3]) * 100;
+				labelName = "__" + labelName;
+			}else if(kaisou == 10){
+				totalOrder = Integer.parseInt(params[3]) * 10;
+				labelName = "___" + labelName;
+			}else if(kaisou == 1){
+				totalOrder = Integer.parseInt(params[3]) * 1;
+				labelName = "____" + labelName;
+			}
+//			System.out.printf("%5d:%s\n",totalOrder,labelName);
+			params[8] = "" + totalOrder;
+			params[4] = labelName;
+			String value = getConcatParams(params);
+			this.targetOrderMap.replace(key, value);
+		});
+		//
+		this.targetOrderMap.keySet().stream().sorted().forEach((key) -> {
+//			System.out.println(key + ":" );
+			String obj = this.targetOrderMap.get(key);
+			String[] params = obj.split("/");
+			String labelName = params[4];//key.split("_")[1];
+			params[8] = key.split("_")[0];
+			String value = getConcatParams(params);
+//			System.out.printf("%5s:%s\n",params[8],labelName);
+			this.targetOrderMap.replace(key, value);
+		});
+		return this.targetOrderMap;
+
+	}
 	/**
 	 * 表示順,表示用に階層構造を算出し、Mapに埋め込む
 	 * @return
@@ -187,7 +232,7 @@ public class Algorithm01 {
 	 * @param params
 	 * @return
 	 */
-	private String getConcatParams(String[] params) {
+	public String getConcatParams(String[] params) {
 		// TODO 自動生成されたメソッド・スタブ
 		Optional<String> a =Arrays.asList(params).stream().reduce((value1, value2) -> value1.concat("/").concat(value2));
 		return a.get();
@@ -236,5 +281,71 @@ public class Algorithm01 {
 		}
 		return dataArray;
 	}
+
+	/**
+	 * 検索対象のラベルが親の場合、子供の人数を調べて返す。
+	 * @param dataArray
+	 * @param targetLabel
+	 * @return
+	 */
+	public int getLevelOrder(String targetLabel){
+		int levelOrder = this.targetList.stream()
+				.map(s -> s)
+				.filter(s -> (s.split("/")[1].equals(targetLabel)))
+				.collect(Collectors.toList()).size();
+		return levelOrder;
+	}
+
+	/**
+	 * 検索対象のラベルの階層を取得し、１階層下の階層値を取得する
+	 * @param dataArray
+	 * @param targetLabel
+	 * @return
+	 */
+	public String getNextLevel(String targetLabel){
+		String nextLevel = this.targetList.stream()
+				.map(s -> s)
+				.filter(s -> (s.split("/")[2].equals(targetLabel)))
+				.map(s -> s.split("/")[5])
+			    .collect(Collectors.joining());
+		System.out.println(nextLevel);
+		nextLevel = "0".concat(nextLevel).substring(0, 5);
+		return nextLevel;
+	}
+
+	/**
+	 *
+	 * @param dataArray ラベル一覧：全データ（もしくは削除フラグが無効のもの）
+	 * @param parent 親ラベルID
+	 * @param own 移動対象のラベルID：対象は、このラベルIDのみで一意に識別可能
+	 * @param orderdiv 対象ラベルの座している階層上での順番
+	 * @param name ラベル名
+	 * @param levels 対象ラベルの座している階層を識別するためのコード
+	 * @param analizecd 分析コード
+	 * @param deleteflg 論理削除フラグ
+	 * @param order 最終表示順序：テーブルには持たせていないが、Viewでは必要になる。サーバサイドで算出しなくともフロントでは最低限必要になる。
+	 * @return
+	 */
+	public Map<String,String> updateOneData(String parent,String own,String orderdiv,String name,String levels,String analizecd,String deleteflg,String order){
+		for(int i = 0 ; i < this.targetList.size() ; i++){
+			// データの一意識別は、あくまでも「ラベルID」のみで構わない。
+			String[] params = this.targetList.get(i).split("/");
+			if( params[2].equals(own)){
+				params[1] = parent;
+				params[3] = orderdiv;
+				params[4] = name;
+				params[5] = levels;
+				params[6] = analizecd;
+				params[7] = deleteflg;
+				params[8] = order;
+			}
+			String value = getConcatParams(params);
+			this.targetMap.replace(params[2], value);
+			this.targetOrderMap.replace(params[8] + "_" + params[4], value);
+		}
+		return this.targetOrderMap;
+	}
+
+
 
 }

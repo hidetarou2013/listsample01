@@ -40,6 +40,22 @@ public class App {
 		};
 		Algorithm01 obj = new Algorithm01(dataArray);
 		Map<String,String> map = obj.modifyMap();
+		System.out.println("初期状態の表示");
+		dispOut(map);
+		//
+		int levelOrder = obj.getLevelOrder("0003");
+		System.out.println("A-2の子供数：" + levelOrder);
+		String nextLevel = obj.getNextLevel("0003");
+		System.out.println("nextLevel：" + nextLevel);
+		obj.updateOneData("0003","0006","" + (levelOrder + 1),"B-2",nextLevel,"0","0","");
+		Map<String,String> map2 = obj.modifyMapAfterMove();
+		System.out.println("変換後の表示");
+		dispOut(map2);
+		// updateOneData かmodifyMapにバグがある。更新されないでもとのまま。
+
+	}
+
+	private static void dispOut(Map<String, String> map) {
 		map.keySet().stream().sorted().forEach((key) -> {
 			String e = map.get(key);
 			String[] params = e.split("/");
@@ -48,7 +64,6 @@ public class App {
 			String value = getConcatParams(params);
 			System.out.printf("%5s:%s\n",params[8],labelName);
 		});
-
 	}
 
 	/**
