@@ -181,18 +181,6 @@ public class Algorithm01 {
 		return this.targetOrderMap;
 	}
 
-//	public Map<String,String> createOrderMap(){
-//		targetOrderMap = null;
-//		this.targetMap.entrySet().stream()
-//			.map( e ->
-//			 e.getKey() + ": " + e.getValue()
-//			).forEach(action -> {
-//				System.out.println(action);
-//				targetOrderMap.put(action,"");
-//			});
-//		return targetOrderMap;
-//	}
-
 	/**
 	 * e1/e2/e3 形式の文字列返す
 	 *
@@ -248,10 +236,5 @@ public class Algorithm01 {
 		}
 		return dataArray;
 	}
-
-	public void sorted(){
-
-	}
-
 
 }
