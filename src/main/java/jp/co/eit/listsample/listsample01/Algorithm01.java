@@ -1,13 +1,14 @@
 package jp.co.eit.listsample.listsample01;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Algorithm01 {
 
@@ -121,18 +122,54 @@ public class Algorithm01 {
 			}else if(kaisou == 1){
 				totalOrder = Integer.parseInt(params[3]) * 1;
 			}
-			System.out.printf("%4d:%s\n",totalOrder,labelName);
 			params[8] = "" + totalOrder;
 			String value = getConcatParams(params);
+			System.out.printf("%5d:%s:%s\n",totalOrder,key,value);
 			this.targetMap.put(key, value);
 		});
+		// もう一回親の順序を組み込む必要がある。addOrderNoInArrayを参考にすること。
+		Set<String> keyset = this.targetMap.keySet();
+		Iterator<String> ite = keyset.iterator();
+		int totalOrder = 0;
+		List<String> tList = new ArrayList<String>();
+		while(ite.hasNext()){
+			String key = ite.next();
+			String value1 = this.targetMap.get(key);
+			String[] params = value1.split("/");
+			String parent = params[1];
+			totalOrder = Integer.parseInt(params[8]);
+			int totalOrderP = 0;
+			Set<String> keyset2 = this.targetMap.keySet();
+			Iterator<String> ite2 = keyset2.iterator();
+			while(ite2.hasNext()){
+				String key2 = ite2.next();
+				String value2 = this.targetMap.get(key2);
+				String[] params2 = value2.split("/");
+				String own = params2[2];
+				if(parent.equals(own)){
+					totalOrderP = Integer.parseInt(params2[8]);
+				}
+			}
+			totalOrder += totalOrderP;
+			params[8] = "" + totalOrder;
+			String value = getConcatParams(params);
+			tList.add(value);
+			System.out.printf("%5d:%s:%s\n",totalOrder,key,value);
+			this.targetMap.put(key, value);
+		}
+		// this.targetListも詰めなおす。
+		this.targetList.clear();
+		this.targetList.addAll(tList);
+		createTargetOrderMapByTargetList();// targetOrderMap
 		return this.targetMap;
 	}
 
 	public Map<String,String> modifyMapAfterMove() {
-		this.targetOrderMap.keySet().stream().forEach((key) -> {
+		System.out.println("変換後のはず：");
+		this.targetMap.keySet().stream().forEach((key) -> {
 //			System.out.println(key + ":" );
-			String obj = this.targetOrderMap.get(key);
+			String obj = this.targetMap.get(key);
+//			System.out.println("変換後のはず：" + obj);
 			String[] params = obj.split("/");
 			String labelName = params[4];
 			int kaisou = Integer.parseInt(params[5]);
@@ -152,11 +189,11 @@ public class Algorithm01 {
 				totalOrder = Integer.parseInt(params[3]) * 1;
 				labelName = "____" + labelName;
 			}
-//			System.out.printf("%5d:%s\n",totalOrder,labelName);
 			params[8] = "" + totalOrder;
 			params[4] = labelName;
 			String value = getConcatParams(params);
-			this.targetOrderMap.replace(key, value);
+			System.out.printf("%5d:%s:%s\n",totalOrder,labelName,value);
+			this.targetMap.replace(key, value);
 		});
 		//
 		this.targetOrderMap.keySet().stream().sorted().forEach((key) -> {
@@ -169,6 +206,8 @@ public class Algorithm01 {
 //			System.out.printf("%5s:%s\n",params[8],labelName);
 			this.targetOrderMap.replace(key, value);
 		});
+//		this.targetOrderMap.clear();
+//		this.targetOrderMap.putAll(map1);
 		return this.targetOrderMap;
 
 	}
@@ -178,12 +217,10 @@ public class Algorithm01 {
 	 */
 	public Map<String,String> modifyMap() {
 		// 事前にtargetListに値が詰め込まれていること。
-		for(String record : this.targetList){
-			String[] params = record.split("/");
-			String key = params[8] + "_" + params[4];
-			this.targetOrderMap.put(key, record);
-		}
-
+		System.out.println("1:" + this.targetOrderMap.size());
+		System.out.println("1:" + this.targetList.size());
+		createTargetOrderMapByTargetList();
+		System.out.println("2:" + this.targetOrderMap.size());
 		this.targetOrderMap.keySet().stream().forEach((key) -> {
 //			System.out.println(key + ":" );
 			String obj = this.targetOrderMap.get(key);
@@ -212,6 +249,7 @@ public class Algorithm01 {
 			String value = getConcatParams(params);
 			this.targetOrderMap.replace(key, value);
 		});
+		System.out.println("3:" + this.targetOrderMap.size());
 		//
 		this.targetOrderMap.keySet().stream().sorted().forEach((key) -> {
 //			System.out.println(key + ":" );
@@ -223,7 +261,19 @@ public class Algorithm01 {
 //			System.out.printf("%5s:%s\n",params[8],labelName);
 			this.targetOrderMap.replace(key, value);
 		});
+		System.out.println("4:" + this.targetOrderMap.size());
 		return this.targetOrderMap;
+	}
+
+	private void createTargetOrderMapByTargetList() {
+		this.targetOrderMap.clear();
+		for(String record : this.targetList){
+			String[] params = record.split("/");
+			String key = params[8] + "_" + params[4];
+			this.targetOrderMap.put(key, record);
+		}
+		System.out.println(this.targetList.size());
+		System.out.println(this.targetOrderMap.size());
 	}
 
 	/**
@@ -297,6 +347,15 @@ public class Algorithm01 {
 	}
 
 	/**
+	 * 検索対象のラベルが親の場合、新しい子供を作る場合の順番を返す。
+	 * @param targetLabel
+	 * @return
+	 */
+	public int getNextLevelOrder(String targetLabel){
+		return getLevelOrder(targetLabel) + 1;
+	}
+
+	/**
 	 * 検索対象のラベルの階層を取得し、１階層下の階層値を取得する
 	 * @param dataArray
 	 * @param targetLabel
@@ -327,6 +386,7 @@ public class Algorithm01 {
 	 * @return
 	 */
 	public Map<String,String> updateOneData(String parent,String own,String orderdiv,String name,String levels,String analizecd,String deleteflg,String order){
+		List<String> tList = new ArrayList<String>();
 		for(int i = 0 ; i < this.targetList.size() ; i++){
 			// データの一意識別は、あくまでも「ラベルID」のみで構わない。
 			String[] params = this.targetList.get(i).split("/");
@@ -337,15 +397,138 @@ public class Algorithm01 {
 				params[5] = levels;
 				params[6] = analizecd;
 				params[7] = deleteflg;
-				params[8] = order;
+				params[8] = order;//"0000";// 引数で渡さずにダミー値を入れておく
 			}
+//			params[8] = order;// input ではわたってこない。全部イニシャライズする。
 			String value = getConcatParams(params);
+			System.out.println("変換後：" + value);
+			tList.add(value);
 			this.targetMap.replace(params[2], value);
-			this.targetOrderMap.replace(params[8] + "_" + params[4], value);
+//			this.targetOrderMap.replace(params[8] + "_" + params[2], value);
 		}
-		return this.targetOrderMap;
+		addOrderNoInMap();// ここで第一段階での８番目の要素が入る。まだ親を考慮していない。
+//		addOrderNoInMap();
+//		System.out.println("targetOrderMap");
+//		dispOut(targetOrderMap);
+//		this.targetList.clear();
+//		this.targetList.addAll(tList);// 詰め直し
+		return this.targetMap;
 	}
 
+	public void dispOut(Map<String, String> map) {
+		map.keySet().stream().sorted().forEach((key) -> {
+			String e = map.get(key);
+			String[] params = e.split("/");
+			String labelName = params[4];//key.split("_")[1];
+			params[8] = key.split("_")[0];
+			String value = getConcatParams(params);
+			System.out.printf("[%5s]:%s:%s\n",key,labelName,value);
+		});
+	}
 
+	public void dispOut() {
+		this.targetMap.keySet().stream().sorted().forEach((key) -> {
+			String e = this.targetMap.get(key);
+			String[] params = e.split("/");
+			String labelName = params[4];//key.split("_")[1];
+			params[8] = key.split("_")[0];
+			String value = getConcatParams(params);
+			System.out.printf("[%5s]:%s:%s\n",key,labelName,value);
+		});
+	}
+
+	public String getParam(String key,int index) {
+		// TODO 自動生成されたメソッド・スタブ
+		String data = this.targetMap.get(key);
+		String[] params = data.split("/");
+//		int order = Integer.parseInt(params[3]);
+		return params[index];
+	}
+
+	public String getNextDispOrder(String param8, String nextLevel, int nextLevelOrder) {
+		// TODO 自動生成されたメソッド・スタブ
+		int intParam8 = Integer.parseInt(param8) + Integer.parseInt(nextLevel) * nextLevelOrder;
+		return "" + intParam8;
+	}
+
+	/**
+	 * 移動後の親のラベルコードを指定して、対象のデータを更新する
+	 *
+	 * @param moveToAsParent 移動後の親のラベルコード
+	 * @param target 対象のラベルコード
+	 * @return
+	 */
+	public String getUpdateParam(String moveToAsParent, String target) {
+		// TODO 自動生成されたメソッド・スタブ
+		// 移動先の情報の取得
+		int levelOrder = getLevelOrder(moveToAsParent);
+		int nextLevelOrder = levelOrder + 1;
+//		System.out.println("移動後の親の子供数：" + levelOrder);
+		String nextLevel = getNextLevel(moveToAsParent);
+//		System.out.println("nextLevel：" + nextLevel);
+		String param8 = getParam(moveToAsParent,8);
+//		System.out.println("param8：" + param8);
+		String nextDispOrder = getNextDispOrder(param8,nextLevel,nextLevelOrder);
+//		System.out.println("nextDispOrder：" + nextDispOrder);
+		String data = this.targetMap.get(target);
+		String[] params = data.split("/");
+		//
+		params[1] = moveToAsParent;
+		params[3] = "" + nextLevelOrder;
+		params[5] = nextLevel;
+		params[8] = nextDispOrder;
+		String value = getConcatParams(params);
+		return value;
+	}
+
+	public String getChilds(String targetLabel) {
+		// TODO 自動生成されたメソッド・スタブ
+		String ret = this.targetList.stream()
+				.map(s -> s)
+				.filter(s -> (s.split("/")[1].equals(targetLabel)))
+				.map(s -> s.split("/")[2])
+			    .collect(Collectors.joining("_"));
+		return ret;
+	}
+
+	public void updateData(String toParent, String target) {
+		// TODO 自動生成されたメソッド・スタブ
+		String updateRecord = getUpdateParam(toParent,target);
+		System.out.println("updateRecord：" + updateRecord);
+		updateDataSet(updateRecord);
+		String childs = getChilds(target);
+		System.out.println("childs：" + childs);
+		String[] childArr = childs.split("_");
+		for(String e : childArr){
+			String record = getUpdateParam(target,e);
+			updateDataSet(record);
+		}
+		//
+		System.out.println(this.targetList.size());
+		System.out.println(this.targetMap.size());
+		System.out.println(this.targetOrderMap.size());
+	}
+
+	public void updateDataSet(String updateRecord) {
+		// TODO 自動生成されたメソッド・スタブ
+		String[] params = updateRecord.split("/");
+		String key = params[2];
+		this.targetMap.replace(key,updateRecord);
+		String key2 = params[8] + "_" + params[4];
+		this.targetOrderMap.replace(key2, updateRecord);
+		int index = 0;
+		for(int i = 0 ; i < this.targetList.size() ; i++){
+			String[] params2 = this.targetList.get(i).split("/");
+			if(params2[2].equals(key)){
+				index = i;
+				break;
+			}
+		}
+		this.targetList.remove(index);
+		this.targetList.add(index, updateRecord);
+		for(int i = 0 ; i < this.targetList.size() ; i++){
+//			System.out.println("[]" + this.targetList.get(i));
+		}
+	}
 
 }

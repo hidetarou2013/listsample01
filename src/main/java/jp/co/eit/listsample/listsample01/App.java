@@ -22,7 +22,7 @@ public class App {
 //		method01();
 //		method02();
 //		method03();
-//		method04();
+		method04();
 
 		method05();
 	}
@@ -42,15 +42,30 @@ public class App {
 		Map<String,String> map = obj.modifyMap();
 		System.out.println("初期状態の表示");
 		dispOut(map);
-		//
+		// 移動先の情報の取得
 		int levelOrder = obj.getLevelOrder("0003");
+		int nextLevelOrder = levelOrder + 1;
 		System.out.println("A-2の子供数：" + levelOrder);
 		String nextLevel = obj.getNextLevel("0003");
 		System.out.println("nextLevel：" + nextLevel);
-		obj.updateOneData("0003","0006","" + (levelOrder + 1),"B-2",nextLevel,"0","0","");
-		Map<String,String> map2 = obj.modifyMapAfterMove();
+		String param8 = obj.getParam("0003",8);
+		System.out.println("param8：" + param8);
+		String nextDispOrder = obj.getNextDispOrder(param8,nextLevel,nextLevelOrder);
+		System.out.println("nextDispOrder：" + nextDispOrder);
+		String updateRecord = obj.getUpdateParam("0003","0006");
+		System.out.println("updateRecord：" + updateRecord);
+		String childs = obj.getChilds("0006");
+		System.out.println("childs：" + childs);
+		obj.updateData("0003","0006");
+//		Map<String,String> map1 = obj.updateOneData("0003","0006","" + nextLevelOrder,"B-2",nextLevel,"0","0",nextDispOrder);
+//		obj.getRecordList();
+//		dispOut(map1);
+		Map<String,String> map2 = obj.modifyMap();
+
+//		Map<String,String> map2 = obj.modifyMapAfterMove();
 		System.out.println("変換後の表示");
 		dispOut(map2);
+//		obj.dispOut();
 		// updateOneData かmodifyMapにバグがある。更新されないでもとのまま。
 
 	}
@@ -62,7 +77,7 @@ public class App {
 			String labelName = params[4];//key.split("_")[1];
 			params[8] = key.split("_")[0];
 			String value = getConcatParams(params);
-			System.out.printf("%5s:%s\n",params[8],labelName);
+			System.out.printf("%5s:%s:%s\n",params[8],labelName,value);
 		});
 	}
 
