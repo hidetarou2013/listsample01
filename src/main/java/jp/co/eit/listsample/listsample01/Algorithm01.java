@@ -129,10 +129,14 @@ public class Algorithm01 {
 		return this.targetMap;
 	}
 
-	public Map<String,String> modifyMapAfterMove() {
-		this.targetOrderMap.keySet().stream().forEach((key) -> {
+	/**
+	 *
+	 * @return
+	 */
+	public Map<String,String> modifyMapAfterMove(Map<String,String> inputMap) {
+		inputMap.keySet().stream().forEach((key) -> {
 //			System.out.println(key + ":" );
-			String obj = this.targetOrderMap.get(key);
+			String obj = inputMap.get(key);
 			String[] params = obj.split("/");
 			String labelName = params[4];
 			int kaisou = Integer.parseInt(params[5]);
@@ -152,7 +156,7 @@ public class Algorithm01 {
 				totalOrder = Integer.parseInt(params[3]) * 1;
 				labelName = "____" + labelName;
 			}
-//			System.out.printf("%5d:%s\n",totalOrder,labelName);
+			System.out.printf("%5d:%s\n",totalOrder,labelName);
 			params[8] = "" + totalOrder;
 			params[4] = labelName;
 			String value = getConcatParams(params);
@@ -164,9 +168,21 @@ public class Algorithm01 {
 			String obj = this.targetOrderMap.get(key);
 			String[] params = obj.split("/");
 			String labelName = params[4];//key.split("_")[1];
+			String parent = params[1];
 			params[8] = key.split("_")[0];
+			int totalOrder = Integer.parseInt(params[8]);
+			//
+			int totalOrderP = 0;
+			for(int i = 0 ; i < this.targetList.size() ; i++){
+				String own = this.targetList.get(i).split("/")[2];
+				if(parent.equals(own)){
+					totalOrderP = Integer.parseInt(this.targetList.get(i).split("/")[8]);
+				}
+			}
+			totalOrder += totalOrderP;
+			params[8] = "" + totalOrder;
+			System.out.printf("%5s:%s\n",params[8],labelName);
 			String value = getConcatParams(params);
-//			System.out.printf("%5s:%s\n",params[8],labelName);
 			this.targetOrderMap.replace(key, value);
 		});
 		return this.targetOrderMap;
@@ -340,6 +356,7 @@ public class Algorithm01 {
 				params[8] = order;
 			}
 			String value = getConcatParams(params);
+			System.out.println(value);// B-2の８番目がおかしい。
 			this.targetMap.replace(params[2], value);
 			this.targetOrderMap.replace(params[8] + "_" + params[4], value);
 		}

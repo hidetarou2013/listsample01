@@ -38,20 +38,25 @@ public class App {
 				{ "7", "0006", "0007", "1", "B-2-1","00100", "0", "0" ,""},
 				{ "8", "0000", "0008", "3", "C",    "10000", "0", "0" ,""},
 		};
+		// 外部のモジュール呼び出し
 		Algorithm01 obj = new Algorithm01(dataArray);
 		Map<String,String> map = obj.modifyMap();
 		System.out.println("初期状態の表示");
 		dispOut(map);
 		//
+		System.out.println("移動：B-2 が A-2の子供に");
 		int levelOrder = obj.getLevelOrder("0003");
 		System.out.println("A-2の子供数：" + levelOrder);
 		String nextLevel = obj.getNextLevel("0003");
 		System.out.println("nextLevel：" + nextLevel);
-		obj.updateOneData("0003","0006","" + (levelOrder + 1),"B-2",nextLevel,"0","0","");
-		Map<String,String> map2 = obj.modifyMapAfterMove();
-		System.out.println("変換後の表示");
+		Map<String,String> map1 = obj.updateOneData("0003","0006","" + (levelOrder + 1),"B-2",nextLevel,"0","0","");
+//		System.out.println("変換後の表示1");
+//		dispOut(map1);
+		Map<String,String> map2 = obj.modifyMapAfterMove(map1);
+		System.out.println("変換後の表示2");
 		dispOut(map2);
 		// updateOneData かmodifyMapにバグがある。更新されないでもとのまま。
+		// addOrderNoInArrayのMap版がおかしいのだろう。。メソッド名は変更してしまった。
 
 	}
 
@@ -139,6 +144,7 @@ public class App {
 
 	/**
 	 * 表示順序の算出
+	 * リストデータの変更後に必ず読みだされることで、順番の入れ替えが更新される。
 	 *
 	 * @param dataArray
 	 * @return
