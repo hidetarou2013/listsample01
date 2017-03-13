@@ -24,7 +24,29 @@ public class App {
 //		method03();
 		method04();
 
-		method05();
+		method06();
+	}
+
+	private static void method06() {
+		String[][] dataArray = {
+				{ "1", "0000", "0001", "1", "A",    "10000", "0", "0" ,""},
+				{ "2", "0001", "0002", "1", "A-1",  "01000", "0", "0" ,""},
+				{ "3", "0001", "0003", "2", "A-2",  "01000", "0", "0" ,""},
+				{ "4", "0000", "0004", "2", "B",    "10000", "0", "0" ,""},
+				{ "5", "0004", "0005", "1", "B-1",  "01000", "0", "0" ,""},
+				{ "6", "0004", "0006", "2", "B-2",  "01000", "0", "0" ,""},
+				{ "7", "0006", "0007", "1", "B-2-1","00100", "0", "0" ,""},
+				{ "8", "0000", "0008", "3", "C",    "10000", "0", "0" ,""},
+		};
+		Algorithm01 obj = new Algorithm01(dataArray);
+		Map<String,String> map = obj.modifyMap();
+		System.out.println("初期状態の表示");
+		dispOut(map);
+		System.out.println("ラベルコード0006を ラベルコード0003の子供に移動");
+		obj.updateData("0003","0006");
+		Map<String,String> map2 = obj.modifyMap();
+		System.out.println("変換後の表示");
+		dispOut(map2);
 	}
 
 	private static void method05() {
@@ -50,12 +72,12 @@ public class App {
 		System.out.println("nextLevel：" + nextLevel);
 		String param8 = obj.getParam("0003",8);
 		System.out.println("param8：" + param8);
-		String nextDispOrder = obj.getNextDispOrder(param8,nextLevel,nextLevelOrder);
-		System.out.println("nextDispOrder：" + nextDispOrder);
-		String updateRecord = obj.getUpdateParam("0003","0006");
-		System.out.println("updateRecord：" + updateRecord);
-		String childs = obj.getChilds("0006");
-		System.out.println("childs：" + childs);
+//		String nextDispOrder = obj.getNextDispOrder(param8,nextLevel,nextLevelOrder);
+//		System.out.println("nextDispOrder：" + nextDispOrder);
+//		String updateRecord = obj.getUpdateParam("0003","0006");
+//		System.out.println("updateRecord：" + updateRecord);
+//		String childs = obj.getChilds("0006");
+//		System.out.println("childs：" + childs);
 		obj.updateData("0003","0006");
 //		Map<String,String> map1 = obj.updateOneData("0003","0006","" + nextLevelOrder,"B-2",nextLevel,"0","0",nextDispOrder);
 //		obj.getRecordList();

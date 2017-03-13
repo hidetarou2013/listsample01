@@ -217,10 +217,10 @@ public class Algorithm01 {
 	 */
 	public Map<String,String> modifyMap() {
 		// 事前にtargetListに値が詰め込まれていること。
-		System.out.println("1:" + this.targetOrderMap.size());
-		System.out.println("1:" + this.targetList.size());
+//		System.out.println("1:" + this.targetOrderMap.size());
+//		System.out.println("1:" + this.targetList.size());
 		createTargetOrderMapByTargetList();
-		System.out.println("2:" + this.targetOrderMap.size());
+//		System.out.println("2:" + this.targetOrderMap.size());
 		this.targetOrderMap.keySet().stream().forEach((key) -> {
 //			System.out.println(key + ":" );
 			String obj = this.targetOrderMap.get(key);
@@ -249,7 +249,7 @@ public class Algorithm01 {
 			String value = getConcatParams(params);
 			this.targetOrderMap.replace(key, value);
 		});
-		System.out.println("3:" + this.targetOrderMap.size());
+//		System.out.println("3:" + this.targetOrderMap.size());
 		//
 		this.targetOrderMap.keySet().stream().sorted().forEach((key) -> {
 //			System.out.println(key + ":" );
@@ -261,7 +261,7 @@ public class Algorithm01 {
 //			System.out.printf("%5s:%s\n",params[8],labelName);
 			this.targetOrderMap.replace(key, value);
 		});
-		System.out.println("4:" + this.targetOrderMap.size());
+//		System.out.println("4:" + this.targetOrderMap.size());
 		return this.targetOrderMap;
 	}
 
@@ -272,8 +272,8 @@ public class Algorithm01 {
 			String key = params[8] + "_" + params[4];
 			this.targetOrderMap.put(key, record);
 		}
-		System.out.println(this.targetList.size());
-		System.out.println(this.targetOrderMap.size());
+//		System.out.println(this.targetList.size());
+//		System.out.println(this.targetOrderMap.size());
 	}
 
 	/**
@@ -367,7 +367,7 @@ public class Algorithm01 {
 				.filter(s -> (s.split("/")[2].equals(targetLabel)))
 				.map(s -> s.split("/")[5])
 			    .collect(Collectors.joining());
-		System.out.println(nextLevel);
+//		System.out.println(nextLevel);
 		nextLevel = "0".concat(nextLevel).substring(0, 5);
 		return nextLevel;
 	}
@@ -415,6 +415,10 @@ public class Algorithm01 {
 		return this.targetMap;
 	}
 
+	/**
+	 * 指定されたMap表示
+	 * @param map
+	 */
 	public void dispOut(Map<String, String> map) {
 		map.keySet().stream().sorted().forEach((key) -> {
 			String e = map.get(key);
@@ -426,6 +430,9 @@ public class Algorithm01 {
 		});
 	}
 
+	/**
+	 * targetMap表示
+	 */
 	public void dispOut() {
 		this.targetMap.keySet().stream().sorted().forEach((key) -> {
 			String e = this.targetMap.get(key);
@@ -437,6 +444,12 @@ public class Algorithm01 {
 		});
 	}
 
+	/**
+	 * 対象ラベルの指定プロパティの値の取得
+	 * @param key 対象ラベルコード
+	 * @param index プロパティのインデックス
+	 * @return
+	 */
 	public String getParam(String key,int index) {
 		// TODO 自動生成されたメソッド・スタブ
 		String data = this.targetMap.get(key);
@@ -445,6 +458,13 @@ public class Algorithm01 {
 		return params[index];
 	}
 
+	/**
+	 * 最終的な表示順の更新
+	 * @param param8 移動後の親ラベルの順位
+	 * @param nextLevel 対象ラベルの移動後の階層
+	 * @param nextLevelOrder 対象ラベルの移動後の階層順位
+	 * @return
+	 */
 	public String getNextDispOrder(String param8, String nextLevel, int nextLevelOrder) {
 		// TODO 自動生成されたメソッド・スタブ
 		int intParam8 = Integer.parseInt(param8) + Integer.parseInt(nextLevel) * nextLevelOrder;
@@ -453,6 +473,10 @@ public class Algorithm01 {
 
 	/**
 	 * 移動後の親のラベルコードを指定して、対象のデータを更新する
+	 * params[1]:移動後の親のラベルコード
+	 * params[3]:移動後の自分の階層における順位
+	 * params[5]:移動後の自分の階層
+	 * params[8]:最終的な表示順
 	 *
 	 * @param moveToAsParent 移動後の親のラベルコード
 	 * @param target 対象のラベルコード
@@ -481,6 +505,11 @@ public class Algorithm01 {
 		return value;
 	}
 
+	/**
+	 * 対象のラベルコードを親とする子供のラベルコードのリストを「_」区切りで数珠つなぎにして返す
+	 * @param targetLabel
+	 * @return
+	 */
 	public String getChilds(String targetLabel) {
 		// TODO 自動生成されたメソッド・スタブ
 		String ret = this.targetList.stream()
@@ -491,24 +520,36 @@ public class Algorithm01 {
 		return ret;
 	}
 
+	/**
+	 * 変更後のデータに詰め替える
+	 * @param toParent 移動先の親ラベルコード
+	 * @param target   移動対象のラベルコード
+	 */
 	public void updateData(String toParent, String target) {
 		// TODO 自動生成されたメソッド・スタブ
 		String updateRecord = getUpdateParam(toParent,target);
-		System.out.println("updateRecord：" + updateRecord);
+//		System.out.println("updateRecord：" + updateRecord);
 		updateDataSet(updateRecord);
+		// 移動対象のラベルに子供がいる場合は、子供も一緒に移動するため、子供のラベルコードリストを取得する
 		String childs = getChilds(target);
-		System.out.println("childs：" + childs);
+//		System.out.println("childs：" + childs);
 		String[] childArr = childs.split("_");
 		for(String e : childArr){
+			// 影響範囲のある子供の情報を変更する
 			String record = getUpdateParam(target,e);
+//			System.out.println("updateRecord：" + record);
 			updateDataSet(record);
 		}
-		//
-		System.out.println(this.targetList.size());
-		System.out.println(this.targetMap.size());
-		System.out.println(this.targetOrderMap.size());
+		// for debug
+//		System.out.println(this.targetList.size());
+//		System.out.println(this.targetMap.size());
+//		System.out.println(this.targetOrderMap.size());
 	}
 
+	/**
+	 * 更新されたvalueを受け取り、this.targetMap、this.targetOrderMap、this.targetListすべて更新する
+	 * @param updateRecord 更新されたvalue
+	 */
 	public void updateDataSet(String updateRecord) {
 		// TODO 自動生成されたメソッド・スタブ
 		String[] params = updateRecord.split("/");
