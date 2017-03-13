@@ -536,9 +536,14 @@ public class Algorithm01 {
 		String[] childArr = childs.split("_");
 		for(String e : childArr){
 			// 影響範囲のある子供の情報を変更する
-			String record = getUpdateParam(target,e);
+			// 再帰
+			if(!e.isEmpty()){
+				System.out.println("to：" + target + " from:" + e);
+				updateData(target,e);
+			}
+//			String record = getUpdateParam(target,e);
 //			System.out.println("updateRecord：" + record);
-			updateDataSet(record);
+//			updateDataSet(record);
 		}
 		// for debug
 //		System.out.println(this.targetList.size());
