@@ -15,6 +15,34 @@ import java.util.stream.IntStream;
 public class App {
 
 	/**
+	 * 入力用のラベル情報一覧
+	 */
+	private static String[][] static_input_dataArray = {
+			{ "1", "0000", "0001", "1", "A",    "10000", "0", "0" ,""},
+			{ "2", "0001", "0002", "1", "A-1",  "01000", "0", "0" ,""},
+			{ "3", "0001", "0003", "2", "A-2",  "01000", "0", "0" ,""},
+			{ "4", "0000", "0004", "2", "B",    "10000", "0", "0" ,""},
+			{ "5", "0004", "0005", "1", "B-1",  "01000", "0", "0" ,""},
+			{ "6", "0004", "0006", "2", "B-2",  "01000", "0", "0" ,""},
+			{ "7", "0006", "0007", "1", "B-2-1","00100", "0", "0" ,""},
+			{ "8", "0000", "0008", "3", "C",    "10000", "0", "0" ,""},
+	};
+
+	/**
+	 * 入力用のラベル情報一覧（元のデータが表示順になっていない場合）
+	 */
+	private static String[][] static_input_dataArray2 = {
+			{ "3", "0001", "0003", "2", "A-2",  "01000", "0", "0" ,""},
+			{ "4", "0000", "0004", "2", "B",    "10000", "0", "0" ,""},
+			{ "6", "0004", "0006", "2", "B-2",  "01000", "0", "0" ,""},
+			{ "7", "0006", "0007", "1", "B-2-1","00100", "0", "0" ,""},
+			{ "5", "0004", "0005", "1", "B-1",  "01000", "0", "0" ,""},
+			{ "8", "0000", "0008", "3", "C",    "10000", "0", "0" ,""},
+			{ "1", "0000", "0001", "1", "A",    "10000", "0", "0" ,""},
+			{ "2", "0001", "0002", "1", "A-1",  "01000", "0", "0" ,""},
+	};
+
+	/**
 	 *
 	 * @param args
 	 */
@@ -30,33 +58,44 @@ public class App {
 		IntStream.range(1, 6).forEach(a -> {
 			String tmp = "" + (10000 + a);
 			tmp = tmp.substring(1,tmp.length());
-			method06(tmp,"0006");
+			method06(static_input_dataArray2,tmp,"0006");
 		});
-		IntStream.range(7, 9).forEach(a -> {
+		IntStream.range(8, 9).forEach(a -> {
 			String tmp = "" + (10000 + a);
 			tmp = tmp.substring(1,tmp.length());
-			method06(tmp,"0006");
+			method06(static_input_dataArray2,tmp,"0006");
 		});
 
 	}
 
-	private static void method06(String to,String from) {
+	/**
+	 * ラベルの移動処理
+	 *
+	 * @param dataArray ラベル一覧
+	 * @param to 移動先の親ラベルコード
+	 * @param from 対象のラベルコード
+	 */
+	private static void method06(String[][] dataArray,String to,String from) {
 
-		String[][] dataArray = {
-				{ "1", "0000", "0001", "1", "A",    "10000", "0", "0" ,""},
-				{ "2", "0001", "0002", "1", "A-1",  "01000", "0", "0" ,""},
-				{ "3", "0001", "0003", "2", "A-2",  "01000", "0", "0" ,""},
-				{ "4", "0000", "0004", "2", "B",    "10000", "0", "0" ,""},
-				{ "5", "0004", "0005", "1", "B-1",  "01000", "0", "0" ,""},
-				{ "6", "0004", "0006", "2", "B-2",  "01000", "0", "0" ,""},
-				{ "7", "0006", "0007", "1", "B-2-1","00100", "0", "0" ,""},
-				{ "8", "0000", "0008", "3", "C",    "10000", "0", "0" ,""},
-		};
+//		String[][] dataArray = {
+//				{ "1", "0000", "0001", "1", "A",    "10000", "0", "0" ,""},
+//				{ "2", "0001", "0002", "1", "A-1",  "01000", "0", "0" ,""},
+//				{ "3", "0001", "0003", "2", "A-2",  "01000", "0", "0" ,""},
+//				{ "4", "0000", "0004", "2", "B",    "10000", "0", "0" ,""},
+//				{ "5", "0004", "0005", "1", "B-1",  "01000", "0", "0" ,""},
+//				{ "6", "0004", "0006", "2", "B-2",  "01000", "0", "0" ,""},
+//				{ "7", "0006", "0007", "1", "B-2-1","00100", "0", "0" ,""},
+//				{ "8", "0000", "0008", "3", "C",    "10000", "0", "0" ,""},
+//		};
 		Algorithm01 obj = new Algorithm01(dataArray);
+		String fromLabelName = obj.getParam(from,4);
+		String toLabelName   = obj.getParam(to,4);
 		Map<String,String> map = obj.modifyMap();
 		System.out.println("◆初期状態の表示");
 		dispOut(map);
-		System.out.println("ラベルコード" + from + "を ラベルコード" + to + "の子供に移動");
+		System.out.println("◆ラベルコード" + from
+				+ "("   + fromLabelName + ")を ラベルコード" + to
+				+ "("   + toLabelName + ")の子供に移動");
 		obj.updateData(to,from);
 		Map<String,String> map2 = obj.modifyMap();
 		System.out.println("◆変換後の表示");
@@ -139,7 +178,8 @@ public class App {
 				dataArray[i][4] = name;
 				dataArray[i][5] = levels;
 				dataArray[i][6] = analizecd;
-				dataArray[i][7] = order;
+				dataArray[i][7] = deleteflg;
+				dataArray[i][8] = order;
 			}
 		}
 		return dataArray;
