@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * ラベル情報の一覧表示と移動実験
@@ -22,12 +23,25 @@ public class App {
 //		method01();
 //		method02();
 //		method03();
-		method04();
+//		method04();
+//		method05();
 
-		method06();
+		// refs #1 B-2の移動の全パターンのテスト
+		IntStream.range(1, 6).forEach(a -> {
+			String tmp = "" + (10000 + a);
+			tmp = tmp.substring(1,tmp.length());
+			method06(tmp,"0006");
+		});
+		IntStream.range(7, 9).forEach(a -> {
+			String tmp = "" + (10000 + a);
+			tmp = tmp.substring(1,tmp.length());
+			method06(tmp,"0006");
+		});
+
 	}
 
-	private static void method06() {
+	private static void method06(String to,String from) {
+
 		String[][] dataArray = {
 				{ "1", "0000", "0001", "1", "A",    "10000", "0", "0" ,""},
 				{ "2", "0001", "0002", "1", "A-1",  "01000", "0", "0" ,""},
@@ -40,12 +54,12 @@ public class App {
 		};
 		Algorithm01 obj = new Algorithm01(dataArray);
 		Map<String,String> map = obj.modifyMap();
-		System.out.println("初期状態の表示");
+		System.out.println("◆初期状態の表示");
 		dispOut(map);
-		System.out.println("ラベルコード0006を ラベルコード0003の子供に移動");
-		obj.updateData("0003","0006");
+		System.out.println("ラベルコード" + from + "を ラベルコード" + to + "の子供に移動");
+		obj.updateData(to,from);
 		Map<String,String> map2 = obj.modifyMap();
-		System.out.println("変換後の表示");
+		System.out.println("◆変換後の表示");
 		dispOut(map2);
 	}
 
