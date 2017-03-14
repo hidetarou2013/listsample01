@@ -367,8 +367,13 @@ public class Algorithm01 {
 				.filter(s -> (s.split("/")[2].equals(targetLabel)))
 				.map(s -> s.split("/")[5])
 			    .collect(Collectors.joining());
-//		System.out.println(nextLevel);
-		nextLevel = "0".concat(nextLevel).substring(0, 5);
+
+		if(nextLevel.isEmpty()){
+			nextLevel = "00000";
+		}else{
+			nextLevel = "0".concat(nextLevel).substring(0, 5);
+		}
+		System.out.println(nextLevel);
 		return nextLevel;
 	}
 
@@ -490,7 +495,12 @@ public class Algorithm01 {
 //		System.out.println("移動後の親の子供数：" + levelOrder);
 		String nextLevel = getNextLevel(moveToAsParent);
 //		System.out.println("nextLevel：" + nextLevel);
-		String param8 = getParam(moveToAsParent,8);
+		String param8 = "";//getParam(moveToAsParent,8);
+		if(moveToAsParent.equals("0000")){
+			param8 = "00000";
+		}else{
+			param8 = getParam(moveToAsParent,8);
+		}
 //		System.out.println("param8：" + param8);
 		String nextDispOrder = getNextDispOrder(param8,nextLevel,nextLevelOrder);
 //		System.out.println("nextDispOrder：" + nextDispOrder);

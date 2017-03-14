@@ -80,7 +80,10 @@ public class App {
 			tmp = tmp.substring(1,tmp.length());
 			method06(static_input_dataArray2,tmp,"0006");
 		});
-
+		// Top階層の最終に移動する場合
+		String tmp = "" + (10000);
+		tmp = tmp.substring(1,tmp.length());
+		method06(static_input_dataArray2,tmp,"0006");
 	}
 
 	/**
@@ -104,7 +107,14 @@ public class App {
 //		};
 		Algorithm01 obj = new Algorithm01(dataArray);
 		String fromLabelName = obj.getParam(from,4);
-		String toLabelName   = obj.getParam(to,4);
+		//
+		String toLabelName   = "";
+		if("0000".equals(to)){
+			toLabelName = "最下部";
+		}else{
+			toLabelName   = obj.getParam(to,4);
+		}
+
 		Map<String,String> map = obj.modifyMap();
 		System.out.println("◆初期状態の表示");
 		dispOut(map);
