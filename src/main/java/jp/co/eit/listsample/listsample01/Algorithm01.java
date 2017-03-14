@@ -369,7 +369,7 @@ public class Algorithm01 {
 			    .collect(Collectors.joining());
 
 		if(nextLevel.isEmpty()){
-			nextLevel = "00000";
+			nextLevel = "10000";
 		}else{
 			nextLevel = "0".concat(nextLevel).substring(0, 5);
 		}
