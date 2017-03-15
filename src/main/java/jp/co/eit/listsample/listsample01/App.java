@@ -84,6 +84,45 @@ public class App {
 		String tmp = "" + (10000);
 		tmp = tmp.substring(1,tmp.length());
 		method06(static_input_dataArray2,tmp,"0006");
+		// Top階層の先頭に移動する場合
+		// 第一階層の順番がひとつづつずれる
+		method07(static_input_dataArray2,tmp,"0006");
+	}
+
+	private static void method07(String[][] dataArray, String to, String from) {
+		// TODO 自動生成されたメソッド・スタブ
+		Algorithm01 obj = new Algorithm01(dataArray);
+		String fromLabelName = obj.getParam(from,4);
+		//
+		String toLabelName   = "";
+		if("0000".equals(to)){
+			toLabelName = "最上部";
+		}else{
+			toLabelName   = obj.getParam(to,4);
+		}
+		Map<String,String> map = obj.modifyMap();
+		System.out.println("◆初期状態の表示");
+		dispOut(map);
+		System.out.println("◆ラベルコード" + from
+				+ "("   + fromLabelName + ")を ラベルコード" + to
+				+ "("   + toLabelName + ")の子供に移動");
+		// update
+		Map<String,String> map1 = obj.getTargetOrderMap();
+		map1.keySet().stream().sorted().forEach((key) -> {
+//			System.out.println(key + ":" );
+			String obj2 = map1.get(key);
+			String labelName = key.split("_")[1];
+			String[] params = obj2.split("/");
+			String parent = params[1];
+			if(parent.equals("0000")){
+				int newParam3 = Integer.parseInt(params[3]) + 1;
+				// 更新
+
+			}
+		});
+
+
+
 	}
 
 	/**

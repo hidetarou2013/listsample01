@@ -18,6 +18,30 @@ public class Algorithm01 {
 	 */
 	private Map<String,String> targetMap;
 
+	public Map<String, String> getTargetMap() {
+		return targetMap;
+	}
+
+	public void setTargetMap(Map<String, String> targetMap) {
+		this.targetMap = targetMap;
+	}
+
+	public Map<String, String> getTargetOrderMap() {
+		return targetOrderMap;
+	}
+
+	public void setTargetOrderMap(Map<String, String> targetOrderMap) {
+		this.targetOrderMap = targetOrderMap;
+	}
+
+	public List<String> getTargetList() {
+		return targetList;
+	}
+
+	public void setTargetList(List<String> targetList) {
+		this.targetList = targetList;
+	}
+
 	/**
 	 * 対象のラベル一覧情報のMap:Keyは、表示順の５桁文字がprefixについている。
 	 * 11000_A-1
