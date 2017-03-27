@@ -323,17 +323,21 @@ public class Algorithm01 {
 		// dataArray[5].equals("10000")
 		int totalOrder = 0;
 		for(int i = 0 ; i < dataArray.length ; i++){
-			if(dataArray[i][5].equals("10000")){
-				totalOrder = Integer.parseInt(dataArray[i][3]) * 10000;
-			}else if(dataArray[i][5].equals("01000")){
-				totalOrder = Integer.parseInt(dataArray[i][3]) * 1000;
-			}else if(dataArray[i][5].equals("00100")){
-				totalOrder = Integer.parseInt(dataArray[i][3]) * 100;
-			}else if(dataArray[i][5].equals("00010")){
-				totalOrder = Integer.parseInt(dataArray[i][3]) * 10;
-			}else if(dataArray[i][5].equals("00001")){
-				totalOrder = Integer.parseInt(dataArray[i][3]) * 1;
-			}
+//			if(dataArray[i][5].equals("10000")){
+//				totalOrder = Integer.parseInt(dataArray[i][3]) * 10000;
+//			}else if(dataArray[i][5].equals("01000")){
+//				totalOrder = Integer.parseInt(dataArray[i][3]) * 1000;
+//			}else if(dataArray[i][5].equals("00100")){
+//				totalOrder = Integer.parseInt(dataArray[i][3]) * 100;
+//			}else if(dataArray[i][5].equals("00010")){
+//				totalOrder = Integer.parseInt(dataArray[i][3]) * 10;
+//			}else if(dataArray[i][5].equals("00001")){
+//				totalOrder = Integer.parseInt(dataArray[i][3]) * 1;
+//			}
+
+			// フラグ系表記の場合のメリット：こう書ける。
+			totalOrder = Integer.parseInt(dataArray[i][3]) * Integer.parseInt(dataArray[i][5]);
+
 			dataArray[i][8] = "" + totalOrder;
 //			System.out.println(dataArray[i][8]);
 		}
