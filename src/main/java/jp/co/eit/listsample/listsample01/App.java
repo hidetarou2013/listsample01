@@ -77,6 +77,10 @@ public class App {
 			toLabelName   = obj.getParam(to,4);
 		}
 
+		System.out.println("◆◆ラベルコード" + from
+				+ "("   + fromLabelName + ")を ラベルコード" + to
+				+ "("   + toLabelName + ")の子供に移動");
+
 		Map<String,String> map = obj.modifyMap();
 		System.out.println("◆初期状態の表示");
 		dispOut(map);
@@ -87,6 +91,7 @@ public class App {
 		Map<String,String> map2 = obj.modifyMap();
 		System.out.println("◆変換後の表示");
 		dispOut(map2);
+		System.out.println("");
 	}
 
 
